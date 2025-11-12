@@ -1,0 +1,8 @@
+#ultimate-rent-user-service/.gitignore
+#which will ignore files and folders in the ultimate-rent-user-service project
+
+#Ignore environment files
+.env
+
+#Ignore binary files
+bin

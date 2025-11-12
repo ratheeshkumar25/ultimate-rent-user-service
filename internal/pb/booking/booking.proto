@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+package booking;
+
+option go_package = "github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/internal/pb/booking";
+
+service BookingService {
+    // Booking Management
+    rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse);
+    rpc GetBooking(GetBookingRequest) returns (GetBookingResponse);
+    rpc GetUserBookings(GetUserBookingsRequest) returns (GetUserBookingsResponse);
+    rpc UpdateBookingStatus(UpdateBookingStatusRequest) returns (Response);
+    rpc CancelBooking(CancelBookingRequest) returns (Response);
+    rpc CompleteBooking(CompleteBookingRequest) returns (Response);
+
+    // Payment Operations
+    rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);
+    rpc RefundPayment(RefundPaymentRequest) returns (Response);
+
+    // Damage Reporting
+    rpc ReportDamage(ReportDamageRequest) returns (Response);
+    rpc GetDamageReports(GetDamageReportsRequest) returns (GetDamageReportsResponse);
+}
+
+message Response {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+// Booking Messages
+message CreateBookingRequest {
+    uint32 user_id = 1;
+    uint32 vehicle_id = 2;
+    uint32 office_id = 3;
+    string pickup_date = 4;
+    string return_date = 5;
+    string pickup_time = 6;
+    string return_time = 7;
+    repeated string additional_services = 8;
+}
+
+message CreateBookingResponse {
+    Response response = 1;
+    Booking booking = 2;
+    string payment_url = 3;
+}
+
+message GetBookingRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+}
+
+message GetBookingResponse {
+    Response response = 1;
+    Booking booking = 2;
+}
+
+message GetUserBookingsRequest {
+    uint32 user_id = 1;
+    string status = 2; // "all", "active", "completed", "cancelled"
+    uint32 limit = 3;
+    uint32 offset = 4;
+}
+
+message GetUserBookingsResponse {
+    Response response = 1;
+    repeated Booking bookings = 2;
+    uint32 total_count = 3;
+}
+
+message UpdateBookingStatusRequest {
+    uint32 booking_id = 1;
+    string status = 2; // "confirmed", "active", "completed", "cancelled"
+    uint32 updated_by = 3;
+}
+
+message CancelBookingRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+    string reason = 3;
+}
+
+message CompleteBookingRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+    double final_mileage = 3;
+    string condition_notes = 4;
+}
+
+// Payment Messages
+message ProcessPaymentRequest {
+    uint32 booking_id = 1;
+    double amount = 2;
+    string payment_method = 3; // "razorpay", "stripe"
+    string payment_type = 4; // "deposit", "full", "additional_charges"
+}
+
+message ProcessPaymentResponse {
+    Response response = 1;
+    Payment payment = 2;
+}
+
+message RefundPaymentRequest {
+    uint32 booking_id = 1;
+    uint32 payment_id = 2;
+    double refund_amount = 3;
+    string reason = 4;
+}
+
+// Damage Messages
+message ReportDamageRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+    repeated DamageItem damages = 3;
+    string description = 4;
+    repeated string images = 5;
+}
+
+message GetDamageReportsRequest {
+    uint32 booking_id = 1;
+}
+
+message GetDamageReportsResponse {
+    Response response = 1;
+    repeated DamageReport reports = 2;
+}
+
+// Data Models
+message Booking {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+    uint32 vehicle_id = 3;
+    uint32 office_id = 4;
+    string status = 5; // "pending", "confirmed", "active", "completed", "cancelled"
+    string pickup_date = 6;
+    string return_date = 7;
+    string pickup_time = 8;
+    string return_time = 9;
+    double base_amount = 10;
+    double deposit_amount = 11;
+    double total_amount = 12;
+    double additional_charges = 13;
+    string payment_status = 14;
+    repeated string additional_services = 15;
+    string created_at = 16;
+    string updated_at = 17;
+    Vehicle vehicle = 18;
+    Office office = 19;
+}
+
+message Vehicle {
+    uint32 vehicle_id = 1;
+    string name = 2;
+    string type = 3; // "car", "bike"
+    string transmission = 4;
+    string fuel_type = 5;
+    string registration_number = 6;
+    double daily_rate = 7;
+    double hourly_rate = 8;
+    string status = 9;
+    string image_url = 10;
+}
+
+message Office {
+    uint32 office_id = 1;
+    string name = 2;
+    string address = 3;
+    string city = 4;
+    string state = 5;
+    uint32 zip = 6;
+    string phone = 7;
+    double latitude = 8;
+    double longitude = 9;
+}
+
+message Payment {
+    uint32 payment_id = 1;
+    uint32 booking_id = 2;
+    double amount = 3;
+    string currency = 4;
+    string status = 5;
+    string payment_method = 6;
+    string transaction_id = 7;
+    string created_at = 8;
+}
+
+message DamageItem {
+    string part = 1;
+    string severity = 2; // "minor", "moderate", "severe"
+    string description = 3;
+    double estimated_cost = 4;
+}
+
+message DamageReport {
+    uint32 report_id = 1;
+    uint32 booking_id = 2;
+    uint32 user_id = 3;
+    repeated DamageItem damages = 4;
+    string description = 5;
+    repeated string images = 6;
+    double total_cost = 7;
+    string status = 8; // "reported", "assessed", "approved", "paid"
+    string created_at = 9;
+    string updated_at = 10;
+}

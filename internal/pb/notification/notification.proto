@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+package notification;
+
+option go_package = "github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/internal/pb/notification";
+
+service NotificationService {
+    // SMS Operations
+    rpc SendSMS(SendSMSRequest) returns (Response);
+    rpc SendBulkSMS(SendBulkSMSRequest) returns (Response);
+
+    // Email Operations
+    rpc SendEmail(SendEmailRequest) returns (Response);
+    rpc SendBulkEmail(SendBulkEmailRequest) returns (Response);
+
+    // Push Notification Operations
+    rpc SendPushNotification(SendPushNotificationRequest) returns (Response);
+    rpc SendBulkPushNotification(SendBulkPushNotificationRequest) returns (Response);
+
+    // WhatsApp Operations
+    rpc SendWhatsAppMessage(SendWhatsAppMessageRequest) returns (Response);
+
+    // Template Management
+    rpc GetNotificationTemplates(GetNotificationTemplatesRequest) returns (GetNotificationTemplatesResponse);
+    rpc CreateNotificationTemplate(CreateNotificationTemplateRequest) returns (Response);
+    rpc UpdateNotificationTemplate(UpdateNotificationTemplateRequest) returns (Response);
+
+    // Notification History
+    rpc GetNotificationHistory(GetNotificationHistoryRequest) returns (GetNotificationHistoryResponse);
+}
+
+message Response {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+// SMS Messages
+message SendSMSRequest {
+    string phone = 1;
+    string message = 2;
+    string template_id = 3;
+    map<string, string> template_data = 4;
+    uint32 priority = 5; // 1=low, 2=normal, 3=high
+}
+
+message SendBulkSMSRequest {
+    repeated SendSMSRequest messages = 1;
+}
+
+// Email Messages
+message SendEmailRequest {
+    string to_email = 1;
+    string subject = 2;
+    string body = 3;
+    string template_id = 4;
+    map<string, string> template_data = 5;
+    repeated string cc = 6;
+    repeated string bcc = 7;
+    repeated Attachment attachments = 8;
+    uint32 priority = 9;
+}
+
+message SendBulkEmailRequest {
+    repeated SendEmailRequest emails = 1;
+}
+
+// Push Notification Messages
+message SendPushNotificationRequest {
+    uint32 user_id = 1;
+    string title = 2;
+    string body = 3;
+    string data = 4; // JSON string for additional data
+    string device_token = 5;
+    uint32 priority = 6;
+}
+
+message SendBulkPushNotificationRequest {
+    repeated SendPushNotificationRequest notifications = 1;
+}
+
+// WhatsApp Messages
+message SendWhatsAppMessageRequest {
+    string phone = 1;
+    string message = 2;
+    string template_id = 3;
+    map<string, string> template_data = 4;
+    repeated MediaAttachment media = 5;
+}
+
+// Template Messages
+message GetNotificationTemplatesRequest {
+    string type = 1; // "sms", "email", "whatsapp", "push"
+    string category = 2; // "booking", "payment", "reminder", etc.
+    uint32 limit = 3;
+    uint32 offset = 4;
+}
+
+message GetNotificationTemplatesResponse {
+    Response response = 1;
+    repeated NotificationTemplate templates = 2;
+    uint32 total_count = 3;
+}
+
+message CreateNotificationTemplateRequest {
+    string name = 1;
+    string type = 2;
+    string category = 3;
+    string subject = 4; // for email
+    string content = 5;
+    repeated string variables = 6;
+    bool is_active = 7;
+}
+
+message UpdateNotificationTemplateRequest {
+    string template_id = 1;
+    string name = 2;
+    string type = 3;
+    string category = 4;
+    string subject = 5;
+    string content = 6;
+    repeated string variables = 7;
+    bool is_active = 8;
+}
+
+// History Messages
+message GetNotificationHistoryRequest {
+    uint32 user_id = 1;
+    string type = 2;
+    string status = 3;
+    string start_date = 4;
+    string end_date = 5;
+    uint32 limit = 6;
+    uint32 offset = 7;
+}
+
+message GetNotificationHistoryResponse {
+    Response response = 1;
+    repeated NotificationHistory history = 2;
+    uint32 total_count = 3;
+}
+
+// Data Models
+message Attachment {
+    string filename = 1;
+    bytes data = 2;
+    string content_type = 3;
+}
+
+message MediaAttachment {
+    string type = 1; // "image", "video", "document"
+    string url = 2;
+    string caption = 3;
+}
+
+message NotificationTemplate {
+    string template_id = 1;
+    string name = 2;
+    string type = 3;
+    string category = 4;
+    string subject = 5;
+    string content = 6;
+    repeated string variables = 7;
+    bool is_active = 8;
+    string created_at = 9;
+    string updated_at = 10;
+}
+
+message NotificationHistory {
+    string notification_id = 1;
+    uint32 user_id = 2;
+    string type = 3; // "sms", "email", "push", "whatsapp"
+    string recipient = 4; // phone/email/device_token
+    string subject = 5;
+    string content = 6;
+    string status = 7; // "sent", "delivered", "failed", "pending"
+    string provider_response = 8;
+    string sent_at = 9;
+    string delivered_at = 10;
+    string created_at = 11;
+}

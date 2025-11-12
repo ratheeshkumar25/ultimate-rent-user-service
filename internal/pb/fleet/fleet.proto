@@ -1,0 +1,234 @@
+syntax = "proto3";
+
+package fleet;
+
+option go_package = "github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/internal/pb/fleet";
+
+service FleetService {
+    // Vehicle Operations
+    rpc GetVehicles(GetVehiclesRequest) returns (GetVehiclesResponse);
+    rpc GetVehicle(GetVehicleRequest) returns (GetVehicleResponse);
+    rpc SearchVehicles(SearchVehiclesRequest) returns (SearchVehiclesResponse);
+    rpc GetVehicleAvailability(GetVehicleAvailabilityRequest) returns (GetVehicleAvailabilityResponse);
+    rpc CheckVehicleAvailability(CheckVehicleAvailabilityRequest) returns (CheckVehicleAvailabilityResponse);
+    rpc LockVehicle(LockVehicleRequest) returns (Response);
+    rpc UnlockVehicle(UnlockVehicleRequest) returns (Response);
+
+    // Location & Tracking
+    rpc UpdateVehicleLocation(UpdateVehicleLocationRequest) returns (Response);
+    rpc GetVehicleLocation(GetVehicleLocationRequest) returns (GetVehicleLocationResponse);
+    rpc GetNearbyVehicles(GetNearbyVehiclesRequest) returns (GetNearbyVehiclesResponse);
+
+    // Office Operations
+    rpc GetOffices(GetOfficesRequest) returns (GetOfficesResponse);
+    rpc GetOffice(GetOfficeRequest) returns (GetOfficeResponse);
+}
+
+message Response {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+// Vehicle Messages
+message GetVehiclesRequest {
+    uint32 office_id = 1;
+    string status = 2; // "available", "booked", "maintenance", "all"
+    uint32 limit = 3;
+    uint32 offset = 4;
+}
+
+message GetVehiclesResponse {
+    Response response = 1;
+    repeated Vehicle vehicles = 2;
+    uint32 total_count = 3;
+}
+
+message GetVehicleRequest {
+    uint32 vehicle_id = 1;
+}
+
+message GetVehicleResponse {
+    Response response = 1;
+    Vehicle vehicle = 2;
+}
+
+message SearchVehiclesRequest {
+    string pickup_date = 1;
+    string return_date = 2;
+    uint32 pickup_office_id = 3;
+    uint32 return_office_id = 4;
+    string vehicle_type = 5; // "car", "bike", "all"
+    string transmission = 6; // "manual", "automatic", "all"
+    string fuel_type = 7; // "petrol", "diesel", "electric", "all"
+    double min_price = 8;
+    double max_price = 9;
+    uint32 limit = 10;
+    uint32 offset = 11;
+}
+
+message SearchVehiclesResponse {
+    Response response = 1;
+    repeated Vehicle vehicles = 2;
+    uint32 total_count = 3;
+}
+
+message GetVehicleAvailabilityRequest {
+    uint32 vehicle_id = 1;
+    string start_date = 2;
+    string end_date = 3;
+}
+
+message GetVehicleAvailabilityResponse {
+    Response response = 1;
+    bool available = 2;
+    string next_available_date = 3;
+}
+
+message CheckVehicleAvailabilityRequest {
+    uint32 vehicle_id = 1;
+    string pickup_date = 2;
+    string return_date = 3;
+    uint32 pickup_office_id = 4;
+    uint32 return_office_id = 5;
+}
+
+message CheckVehicleAvailabilityResponse {
+    Response response = 1;
+    bool available = 2;
+    double total_cost = 3;
+    double base_cost = 4;
+    double deposit = 5;
+}
+
+message LockVehicleRequest {
+    uint32 vehicle_id = 1;
+    uint32 user_id = 2;
+    string lock_duration = 3; // ISO 8601 duration
+}
+
+message UnlockVehicleRequest {
+    uint32 vehicle_id = 1;
+    uint32 user_id = 2;
+}
+
+// Location Messages
+message UpdateVehicleLocationRequest {
+    uint32 vehicle_id = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double speed = 4;
+    double heading = 5;
+    string timestamp = 6;
+}
+
+message GetVehicleLocationRequest {
+    uint32 vehicle_id = 1;
+}
+
+message GetVehicleLocationResponse {
+    Response response = 1;
+    Location location = 2;
+}
+
+message GetNearbyVehiclesRequest {
+    double latitude = 1;
+    double longitude = 2;
+    double radius_km = 3;
+    string vehicle_type = 4;
+    uint32 limit = 5;
+}
+
+message GetNearbyVehiclesResponse {
+    Response response = 1;
+    repeated VehicleLocation vehicles = 2;
+}
+
+// Office Messages
+message GetOfficesRequest {
+    string city = 1;
+    string state = 2;
+    uint32 limit = 3;
+    uint32 offset = 4;
+}
+
+message GetOfficesResponse {
+    Response response = 1;
+    repeated Office offices = 2;
+    uint32 total_count = 3;
+}
+
+message GetOfficeRequest {
+    uint32 office_id = 1;
+}
+
+message GetOfficeResponse {
+    Response response = 1;
+    Office office = 2;
+}
+
+// Data Models
+message Vehicle {
+    uint32 vehicle_id = 1;
+    string name = 2;
+    string type = 3; // "car", "bike"
+    string brand = 4;
+    string model = 5;
+    uint32 year = 6;
+    string transmission = 7; // "manual", "automatic"
+    string fuel_type = 8; // "petrol", "diesel", "electric"
+    string color = 9;
+    uint32 seating_capacity = 10;
+    string registration_number = 11;
+    double daily_rate = 12;
+    double hourly_rate = 13;
+    double deposit_amount = 14;
+    string status = 15; // "available", "booked", "maintenance", "out_of_service"
+    uint32 office_id = 16;
+    string image_url = 17;
+    repeated string features = 18;
+    string created_at = 19;
+    string updated_at = 20;
+    Office office = 21;
+}
+
+message Location {
+    uint32 vehicle_id = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double speed = 4;
+    double heading = 5;
+    string timestamp = 6;
+    string address = 7;
+}
+
+message VehicleLocation {
+    Vehicle vehicle = 1;
+    Location location = 2;
+    double distance_km = 3;
+}
+
+message Office {
+    uint32 office_id = 1;
+    string name = 2;
+    string address = 3;
+    string city = 4;
+    string state = 5;
+    uint32 zip = 6;
+    string phone = 7;
+    string email = 8;
+    double latitude = 9;
+    double longitude = 10;
+    string operating_hours = 11;
+    string contact_person = 12;
+    string status = 13; // "active", "inactive"
+    string created_at = 14;
+    string updated_at = 15;
+}
