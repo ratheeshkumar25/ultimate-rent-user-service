@@ -28,6 +28,8 @@ service UserService {
 
     // Document Upload
     rpc UploadDocument(UploadDocumentRequest) returns (Response);
+    rpc GetDocument(ID)returns(Response);
+    rpc DeleteDocument(ID)returns(Response);
 
     // Wallet Management
     rpc GetWalletBalance(ID) returns (WalletResponse);

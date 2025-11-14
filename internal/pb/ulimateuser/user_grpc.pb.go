@@ -33,6 +33,8 @@ const (
 	UserService_GetAddresses_FullMethodName        = "/ulimateuser.UserService/GetAddresses"
 	UserService_ChangePassword_FullMethodName      = "/ulimateuser.UserService/ChangePassword"
 	UserService_UploadDocument_FullMethodName      = "/ulimateuser.UserService/UploadDocument"
+	UserService_GetDocument_FullMethodName         = "/ulimateuser.UserService/GetDocument"
+	UserService_DeleteDocument_FullMethodName      = "/ulimateuser.UserService/DeleteDocument"
 	UserService_GetWalletBalance_FullMethodName    = "/ulimateuser.UserService/GetWalletBalance"
 	UserService_UpdateWalletBalance_FullMethodName = "/ulimateuser.UserService/UpdateWalletBalance"
 	UserService_BlockUser_FullMethodName           = "/ulimateuser.UserService/BlockUser"
@@ -60,6 +62,8 @@ type UserServiceClient interface {
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*Response, error)
 	// Document Upload
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*Response, error)
+	GetDocument(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Response, error)
+	DeleteDocument(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Response, error)
 	// Wallet Management
 	GetWalletBalance(ctx context.Context, in *ID, opts ...grpc.CallOption) (*WalletResponse, error)
 	UpdateWalletBalance(ctx context.Context, in *UpdateWalletRequest, opts ...grpc.CallOption) (*Response, error)
@@ -187,6 +191,26 @@ func (c *userServiceClient) UploadDocument(ctx context.Context, in *UploadDocume
 	return out, nil
 }
 
+func (c *userServiceClient) GetDocument(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserService_GetDocument_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteDocument(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, UserService_DeleteDocument_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) GetWalletBalance(ctx context.Context, in *ID, opts ...grpc.CallOption) (*WalletResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(WalletResponse)
@@ -257,6 +281,8 @@ type UserServiceServer interface {
 	ChangePassword(context.Context, *ChangePasswordRequest) (*Response, error)
 	// Document Upload
 	UploadDocument(context.Context, *UploadDocumentRequest) (*Response, error)
+	GetDocument(context.Context, *ID) (*Response, error)
+	DeleteDocument(context.Context, *ID) (*Response, error)
 	// Wallet Management
 	GetWalletBalance(context.Context, *ID) (*WalletResponse, error)
 	UpdateWalletBalance(context.Context, *UpdateWalletRequest) (*Response, error)
@@ -306,6 +332,12 @@ func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePas
 }
 func (UnimplementedUserServiceServer) UploadDocument(context.Context, *UploadDocumentRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadDocument not implemented")
+}
+func (UnimplementedUserServiceServer) GetDocument(context.Context, *ID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDocument not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteDocument(context.Context, *ID) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteDocument not implemented")
 }
 func (UnimplementedUserServiceServer) GetWalletBalance(context.Context, *ID) (*WalletResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetWalletBalance not implemented")
@@ -541,6 +573,42 @@ func _UserService_UploadDocument_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetDocument(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetDocument_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetDocument(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteDocument(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DeleteDocument_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteDocument(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_GetWalletBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ID)
 	if err := dec(in); err != nil {
@@ -681,6 +749,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadDocument",
 			Handler:    _UserService_UploadDocument_Handler,
+		},
+		{
+			MethodName: "GetDocument",
+			Handler:    _UserService_GetDocument_Handler,
+		},
+		{
+			MethodName: "DeleteDocument",
+			Handler:    _UserService_DeleteDocument_Handler,
 		},
 		{
 			MethodName: "GetWalletBalance",

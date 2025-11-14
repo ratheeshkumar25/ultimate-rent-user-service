@@ -3,7 +3,7 @@ package di
 import (
 	"log"
 
-	"github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/config"
+	"github.com/ratheeshkumar25/ultimate-rent-car/ultimate-rent-user-service/config"
 )
 
 // Init initializes the dependency injection container

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/config"
-	"github.com/yourorg/ultimate-rent-car/ultimate-rent-user-service/internal/model"
+	"github.com/ratheeshkumar25/ultimate-rent-car/ultimate-rent-user-service/config"
+	"github.com/ratheeshkumar25/ultimate-rent-car/ultimate-rent-user-service/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
