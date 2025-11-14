@@ -8,7 +8,7 @@ import (
 type UserServiceInter interface {
 	//User Authentication Services
 	SignupService(p *pb.SignupRequest) (*pb.SignupResponse, error)
-	VerifyService(p *pb.OtpRequest) (*pb.Response, error)
+	VerificationService(p *pb.OtpRequest) (*pb.Response, error)
 	LoginService(p *pb.LoginRequest) (*pb.LoginResponse, error)
 	ChangePassword(p *pb.ChangePasswordRequest) (*pb.Response, error)
 
