@@ -1828,7 +1828,7 @@ const file_internal_pb_ulimateuser_user_proto_rawDesc = "" +
 	"vehicle_id\x18\x01 \x01(\rR\tvehicleId\x12!\n" +
 	"\fvehicle_type\x18\x02 \x01(\tR\vvehicleType\x121\n" +
 	"\x14vehicle_transmission\x18\x03 \x01(\tR\x13vehicleTransmission\x12*\n" +
-	"\x11vehicle_fuel_type\x18\x04 \x01(\tR\x0fvehicleFuelType2\xbd\b\n" +
+	"\x11vehicle_fuel_type\x18\x04 \x01(\tR\x0fvehicleFuelType2\xae\t\n" +
 	"\vUserService\x12A\n" +
 	"\x06Signup\x12\x1a.ulimateuser.SignupRequest\x1a\x1b.ulimateuser.SignupResponse\x12;\n" +
 	"\tVerifyOtp\x12\x17.ulimateuser.OtpRequest\x1a\x15.ulimateuser.Response\x12>\n" +
@@ -1842,7 +1842,9 @@ const file_internal_pb_ulimateuser_user_proto_rawDesc = "" +
 	"\rDeleteAddress\x12\x0f.ulimateuser.ID\x1a\x15.ulimateuser.Response\x12A\n" +
 	"\fGetAddresses\x12\x0f.ulimateuser.ID\x1a .ulimateuser.AddressListResponse\x12K\n" +
 	"\x0eChangePassword\x12\".ulimateuser.ChangePasswordRequest\x1a\x15.ulimateuser.Response\x12K\n" +
-	"\x0eUploadDocument\x12\".ulimateuser.UploadDocumentRequest\x1a\x15.ulimateuser.Response\x12@\n" +
+	"\x0eUploadDocument\x12\".ulimateuser.UploadDocumentRequest\x1a\x15.ulimateuser.Response\x125\n" +
+	"\vGetDocument\x12\x0f.ulimateuser.ID\x1a\x15.ulimateuser.Response\x128\n" +
+	"\x0eDeleteDocument\x12\x0f.ulimateuser.ID\x1a\x15.ulimateuser.Response\x12@\n" +
 	"\x10GetWalletBalance\x12\x0f.ulimateuser.ID\x1a\x1b.ulimateuser.WalletResponse\x12N\n" +
 	"\x13UpdateWalletBalance\x12 .ulimateuser.UpdateWalletRequest\x1a\x15.ulimateuser.Response\x123\n" +
 	"\tBlockUser\x12\x0f.ulimateuser.ID\x1a\x15.ulimateuser.Response\x125\n" +
@@ -1913,29 +1915,33 @@ var file_internal_pb_ulimateuser_user_proto_depIdxs = []int32{
 	18, // 19: ulimateuser.UserService.GetAddresses:input_type -> ulimateuser.ID
 	13, // 20: ulimateuser.UserService.ChangePassword:input_type -> ulimateuser.ChangePasswordRequest
 	14, // 21: ulimateuser.UserService.UploadDocument:input_type -> ulimateuser.UploadDocumentRequest
-	18, // 22: ulimateuser.UserService.GetWalletBalance:input_type -> ulimateuser.ID
-	16, // 23: ulimateuser.UserService.UpdateWalletBalance:input_type -> ulimateuser.UpdateWalletRequest
-	18, // 24: ulimateuser.UserService.BlockUser:input_type -> ulimateuser.ID
-	18, // 25: ulimateuser.UserService.UnblockUser:input_type -> ulimateuser.ID
-	1,  // 26: ulimateuser.UserService.GetAllUsers:input_type -> ulimateuser.NoParam
-	4,  // 27: ulimateuser.UserService.Signup:output_type -> ulimateuser.SignupResponse
-	2,  // 28: ulimateuser.UserService.VerifyOtp:output_type -> ulimateuser.Response
-	7,  // 29: ulimateuser.UserService.Login:output_type -> ulimateuser.LoginResponse
-	8,  // 30: ulimateuser.UserService.GetProfile:output_type -> ulimateuser.ProfileResponse
-	2,  // 31: ulimateuser.UserService.UpdateProfile:output_type -> ulimateuser.Response
-	2,  // 32: ulimateuser.UserService.AddAddress:output_type -> ulimateuser.Response
-	2,  // 33: ulimateuser.UserService.UpdateAddress:output_type -> ulimateuser.Response
-	2,  // 34: ulimateuser.UserService.DeleteAddress:output_type -> ulimateuser.Response
-	12, // 35: ulimateuser.UserService.GetAddresses:output_type -> ulimateuser.AddressListResponse
-	2,  // 36: ulimateuser.UserService.ChangePassword:output_type -> ulimateuser.Response
-	2,  // 37: ulimateuser.UserService.UploadDocument:output_type -> ulimateuser.Response
-	15, // 38: ulimateuser.UserService.GetWalletBalance:output_type -> ulimateuser.WalletResponse
-	2,  // 39: ulimateuser.UserService.UpdateWalletBalance:output_type -> ulimateuser.Response
-	2,  // 40: ulimateuser.UserService.BlockUser:output_type -> ulimateuser.Response
-	2,  // 41: ulimateuser.UserService.UnblockUser:output_type -> ulimateuser.Response
-	17, // 42: ulimateuser.UserService.GetAllUsers:output_type -> ulimateuser.UserListResponse
-	27, // [27:43] is the sub-list for method output_type
-	11, // [11:27] is the sub-list for method input_type
+	18, // 22: ulimateuser.UserService.GetDocument:input_type -> ulimateuser.ID
+	18, // 23: ulimateuser.UserService.DeleteDocument:input_type -> ulimateuser.ID
+	18, // 24: ulimateuser.UserService.GetWalletBalance:input_type -> ulimateuser.ID
+	16, // 25: ulimateuser.UserService.UpdateWalletBalance:input_type -> ulimateuser.UpdateWalletRequest
+	18, // 26: ulimateuser.UserService.BlockUser:input_type -> ulimateuser.ID
+	18, // 27: ulimateuser.UserService.UnblockUser:input_type -> ulimateuser.ID
+	1,  // 28: ulimateuser.UserService.GetAllUsers:input_type -> ulimateuser.NoParam
+	4,  // 29: ulimateuser.UserService.Signup:output_type -> ulimateuser.SignupResponse
+	2,  // 30: ulimateuser.UserService.VerifyOtp:output_type -> ulimateuser.Response
+	7,  // 31: ulimateuser.UserService.Login:output_type -> ulimateuser.LoginResponse
+	8,  // 32: ulimateuser.UserService.GetProfile:output_type -> ulimateuser.ProfileResponse
+	2,  // 33: ulimateuser.UserService.UpdateProfile:output_type -> ulimateuser.Response
+	2,  // 34: ulimateuser.UserService.AddAddress:output_type -> ulimateuser.Response
+	2,  // 35: ulimateuser.UserService.UpdateAddress:output_type -> ulimateuser.Response
+	2,  // 36: ulimateuser.UserService.DeleteAddress:output_type -> ulimateuser.Response
+	12, // 37: ulimateuser.UserService.GetAddresses:output_type -> ulimateuser.AddressListResponse
+	2,  // 38: ulimateuser.UserService.ChangePassword:output_type -> ulimateuser.Response
+	2,  // 39: ulimateuser.UserService.UploadDocument:output_type -> ulimateuser.Response
+	2,  // 40: ulimateuser.UserService.GetDocument:output_type -> ulimateuser.Response
+	2,  // 41: ulimateuser.UserService.DeleteDocument:output_type -> ulimateuser.Response
+	15, // 42: ulimateuser.UserService.GetWalletBalance:output_type -> ulimateuser.WalletResponse
+	2,  // 43: ulimateuser.UserService.UpdateWalletBalance:output_type -> ulimateuser.Response
+	2,  // 44: ulimateuser.UserService.BlockUser:output_type -> ulimateuser.Response
+	2,  // 45: ulimateuser.UserService.UnblockUser:output_type -> ulimateuser.Response
+	17, // 46: ulimateuser.UserService.GetAllUsers:output_type -> ulimateuser.UserListResponse
+	29, // [29:47] is the sub-list for method output_type
+	11, // [11:29] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
 	11, // [11:11] is the sub-list for extension extendee
 	0,  // [0:11] is the sub-list for field type_name
